@@ -212,11 +212,14 @@
     var styleJson = JSON.parse(styleStr)
     customStyle = styleJson
     iframeSrc += '?style=' + window.encodeURIComponent(styleStr)
+
+    console.log(window.pypestreamConfig.debug)
+
     if (window.pypestreamConfig.debug) {
-      console.log(window.pypestreamConfig.debug)
       iframeSrc += '&debug=true'
-      console.log(iframeSrc)
     }
+
+    console.log(iframeSrc)
 
     // <TEMP>
     // styleJson.styleSelection = 2
