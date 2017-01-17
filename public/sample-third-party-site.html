@@ -1,3 +1,8 @@
+<!--
+  <TODO>
+  - Add app_id field
+-->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -17,6 +22,7 @@
         max-width: 768px;
         margin: 0 auto;
         font-family: georgia;
+        margin-top: 110px;
       }
       .columns {
         column-count: 3;
@@ -34,9 +40,71 @@
         font-weight: bold;
         font-size: 1.5rem;
       }
+      .config {
+        position: fixed;
+        width: 100%;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 6px 4px;
+        background: #ff009f;
+        color: #fff;
+        font-family: monospace;
+        font-size: 13px;
+      }
+      .config h3 {
+        display: inline-block;
+        margin: 0;
+        font-size: 13px;
+        font-weight: normal;
+        width: 50px;
+        text-align: right;
+      }
+      .config section {
+        word-spacing: 0;
+      }
+      button {
+        margin: 0;
+        padding: 4px 12px;
+        border: none;
+        background: #fff;
+        outline: none !important;
+      }
+      button:hover {
+        background: #cec6e4;
+      }
+      .mode-config {
+        margin-top: 4px;
+      }
+      .debug-config {
+        margin-top: 4px;
+      }
+      button.is-selected {
+        background: #8876bc;
+        color: #fff;
+      }
     </style>
   </head>
   <body>
+    <div class="config">
+      <section class="env-config">
+        <h3>ENV</h3>
+        <button id='env-prod' onclick="setEnv('prod', true)">prod</button>
+        <button id='env-qa' onclick="setEnv('qa', true)">qa</button>
+        <button id='env-stage' onclick="setEnv('stage', true)">stage</button>
+        <button id='env-ce' onclick="setEnv('ce', true)">ce</button>
+      </section>
+      <section class="mode-config">
+        <h3>MODE</h3>
+        <button id='mode-localhost' onclick="setMode('localhost', true)">localhost</button>
+        <button id='mode-heroku' onclick="setMode('heroku', true)">heroku</button>
+      </section>
+      <section class="debug-config">
+        <h3>DEBUG</h3>
+        <button id='mode-debug-true' onclick="setDebug(true, true)">true</button>
+        <button id='mode-debug-false' onclick="setDebug(false, true)">false</button>
+      </section>
+    </div>
     <h1>My Third-Party World Wide Web Site On The Internet</h1>
     <div class="columns">
       <p>
@@ -51,24 +119,63 @@
       </p>
     </div>
     <script>
+      function setEnv (env, isEvent) {
+        window.pypestreamConfig.ENV = env
+        document.querySelectorAll('.env-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('env-' + env).classList.add('is-selected')
+      }
+      function setMode (mode, isEvent) {
+        window.pypestreamConfig.mode = mode
+        document.querySelectorAll('.mode-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('mode-' + mode).classList.add('is-selected')
+      }
+      function setDebug (debug, isEvent) {
+        window.pypestreamConfig.debug = debug
+        document.querySelectorAll('.debug-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('mode-debug-' + debug.toString()).classList.add('is-selected')
+      }
+    </script>
+    <script>
       window.pypestreamConfig = {
         // This will be omitted in the actual code. Will default to 'prod'
         ENV: 'ce',
+
+        // Used to determine whether to use localhost or live urls
+        mode: 'localhost',
+
+        // If the app start in debug mode
+        debug: false,
 
         // The third-party site hardcodes this; taken from the admin
         // script. This is referenced in the widget launcher script to
         // perform a rest call.
         // APP_ID: '5ad7423c-7365-4a0c-bd88-4734794c1759',  // default style
         // APP_ID: 'b295f7df-51fe-4734-8f8e-d50c6eb476ca',  // Custom colors
-        APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // Custom size,
-
-        debug: true,
+        APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // Custom size
       }
+
+      setEnv(window.pypestreamConfig.ENV)
+      var mode = window.pypestreamConfig.mode
+      if (location.href.indexOf('herokuapp') !== -1) {
+        mode = 'heroku'
+      }
+      setMode(mode)
+      setDebug(window.pypestreamConfig.debug)
 
       ;(function () {
         // This references a static file on one of our content servers. It
         // never changes
-        var SCRIPT_SRC = 'https://test-webchat.herokuapp.com/widget-launcher.js'
+        var SCRIPT_SRC = 'http://localhost:7100/index.js'  // <TODO> Change to static file location
+        if (mode === 'heroku') {
+          SCRIPT_SRC = 'https://test-webchat.herokuapp.com/widget-launcher.js'
+        }
+        // var SCRIPT_SRC = 'http://192.168.1.28:7100/index.js'
         window.addEventListener('load', function () {
           var script = Object.assign(document.createElement('script'), {
             type: 'text/javascript',

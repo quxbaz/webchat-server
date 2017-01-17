@@ -80,8 +80,10 @@
   // Mutables
   var chatContainerWidth = DEFAULT_WIDTH
   var chatContainerHeight = DEFAULT_HEIGHT
-  var iframeSrc = 'https://test-webchat.herokuapp.com/'
-  // var iframeSrc = 'http://localhost:5000'
+  var iframeSrc = 'http://localhost:5000'
+  if (window.pypestreamConfig.mode === 'heroku') {
+    iframeSrc = 'https://test-webchat.herokuapp.com'
+  }
   // var iframeSrc = 'http://192.168.1.28:5000'
   var isLauncherActive = false
 
@@ -149,7 +151,10 @@
     isLauncherActive = !isLauncherActive
     var icon = appLauncher.querySelector('img')
     if (isLauncherActive) {
-      chatContainer.appendChild(appIframe)
+      if (!appIframe) {
+        appIframe = createIframe(src)
+        chatContainer.appendChild(appIframe)
+      }
       chatContainer.style.transform = 'translateY(0)'
       chatContainer.style.visibility = 'visible'
       chatContainer.style.opacity = 1
@@ -239,7 +244,7 @@
 
     chatContainer = createChatContainer()
     appLoader = createLoader()
-    appIframe = createIframe(src)
+    // appIframe = createIframe(src)
     appLauncher = createLauncher(appLauncherStyle)
     var icon = document.createElement('img')
     icon.style.userSelect = 'none'
