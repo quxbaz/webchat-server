@@ -81,6 +81,8 @@
   var chatContainerWidth = DEFAULT_WIDTH
   var chatContainerHeight = DEFAULT_HEIGHT
   var iframeSrc = 'https://test-webchat.herokuapp.com/'
+  // var iframeSrc = 'http://localhost:5000'
+  // var iframeSrc = 'http://192.168.1.28:5000'
   var isLauncherActive = false
 
   // DOM elements
@@ -205,6 +207,9 @@
     var styleJson = JSON.parse(styleStr)
     customStyle = styleJson
     var src = iframeSrc + '?style=' + window.encodeURIComponent(styleStr)
+    if (window.pypestreamConfig.debug) {
+      src += '&debug=true'
+    }
 
     // <TEMP>
     // styleJson.styleSelection = 2
