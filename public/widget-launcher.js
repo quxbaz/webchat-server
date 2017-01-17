@@ -152,7 +152,7 @@
     var icon = appLauncher.querySelector('img')
     if (isLauncherActive) {
       if (!appIframe) {
-        appIframe = createIframe(src)
+        appIframe = createIframe(iframeSrc)
         chatContainer.appendChild(appIframe)
       }
       chatContainer.style.transform = 'translateY(0)'
@@ -211,9 +211,9 @@
     var styleStr = json.widget_data.style
     var styleJson = JSON.parse(styleStr)
     customStyle = styleJson
-    var src = iframeSrc + '?style=' + window.encodeURIComponent(styleStr)
+    iframeSrc += '?style=' + window.encodeURIComponent(styleStr)
     if (window.pypestreamConfig.debug) {
-      src += '&debug=true'
+      iframeSrc += '&debug=true'
     }
 
     // <TEMP>
