@@ -9,8 +9,8 @@ app.use(express.static(__dirname + '/public'))
 // app.set('views', __dirname + '/views')
 // app.set('view engine', 'ejs')
 
-app.get('/', function(request, response) {
-  var result = 'hello world'
+app.get('/foobar', function(request, response) {
+  var result = 'foobar'
   response.send(result)
 })
 
