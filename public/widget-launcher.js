@@ -32,9 +32,6 @@
   var WHITE_X_SVG = 'data:image/svg+xml;utf8,<svg width="32px" height="30px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch --><title>03F0BABC-D992-48F9-BF1A-0C34BDEC14E1</title><desc>Created with sketchtool.</desc><defs><filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1"><feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g id="Future-V1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="21.-Page-scrolled" transform="translate(-900.000000, -719.000000)" fill="#FFFFFF"><g id="Group-10-Copy" transform="translate(50.000000, 51.000000)"><g id="#intercom-container-+-Group-33-+-Group-33-Copy-+-Topics-+-Group-8-+-Group-32-+-Group-5-+-Group-+-Group-30-Mask"><g id="Message-CTA" filter="url(#filter-1)" transform="translate(834.000000, 652.000000)"><g id="X-icon-white" transform="translate(25.000000, 25.000000)"><polygon id="Rectangle-61" points="10 8 2 0 -8.03887339e-14 2 8 10 -8.03887339e-14 18 2 20 10 12 18 20 20 18 12 10 20 2 18 0 10 8"></polygon></g></g></g></g></g></g></svg>'
   var BLACK_X_SVG = 'data:image/svg+xml;utf8,<svg width="32px" height="30px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch --><title>72F64C89-15F1-4562-9CFF-B1540301B104</title><desc>Created with sketchtool.</desc><defs><filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1"><feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g id="Future-V1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="19.-Widget-colors-customized" transform="translate(-900.000000, -719.000000)" fill="#000000"><g id="Group-10-Copy-5" transform="translate(50.000000, 51.000000)"><g id="#intercom-container-+-Group-33-+-Group-33-Copy-+-Topics-+-Group-8-+-Group-32-+-Group-5-+-Group-+-Group-30-Mask"><g id="Message-CTA" filter="url(#filter-1)" transform="translate(834.000000, 652.000000)"><g id="X-icon-black" transform="translate(25.000000, 25.000000)"><polygon id="Rectangle-61" points="10 8 2 0 -8.03887339e-14 2 8 10 -8.03887339e-14 18 2 20 10 12 18 20 20 18 12 10 20 2 18 0 10 8"></polygon></g></g></g></g></g></g></svg>'
 
-  var APP_ID = window.pypestreamConfig.APP_ID
-  var ENV = window.pypestreamConfig.ENV || 'prod'
-
   var DEFAULT_WIDTH = 500
   var DEFAULT_HEIGHT = 600
 
@@ -152,6 +149,9 @@
     var icon = appLauncher.querySelector('img')
     if (isLauncherActive) {
       if (!appIframe) {
+        if (window.pypestreamConfig.debug) {
+          iframeSrc += '&debug=true'
+        }
         appIframe = createIframe(iframeSrc)
         chatContainer.appendChild(appIframe)
       }
@@ -212,14 +212,11 @@
     var styleJson = JSON.parse(styleStr)
     customStyle = styleJson
     iframeSrc += '?style=' + window.encodeURIComponent(styleStr)
-
-    console.log(window.pypestreamConfig.debug)
-
-    if (window.pypestreamConfig.debug) {
-      iframeSrc += '&debug=true'
-    }
-
-    console.log(iframeSrc)
+    iframeSrc += '&app_id=' + window.encodeURIComponent(window.pypestreamConfig.APP_ID)
+    iframeSrc += '&pype_id=' + window.encodeURIComponent(json.widget_data.pype_id)
+    iframeSrc += '&stream_id=' + window.encodeURIComponent(json.widget_data.stream_id)
+    iframeSrc += '&user_id=' + window.encodeURIComponent(json.id)
+    iframeSrc += '&access_token=' + window.encodeURIComponent(json.access_token)
 
     // <TEMP>
     // styleJson.styleSelection = 2
@@ -228,7 +225,7 @@
     // styleJson.widgetPosition = 'top-left'
     // styleJson.widgetPosition = 'top-right'
     // styleJson.widgetPosition = 'bottom-left'
-    styleJson.widgetPosition = 'bottom-right'
+    // styleJson.widgetPosition = 'bottom-right'
 
     var appLauncherStyle = {
       background: styleJson.widgetStyleColor || '#ff00ff',
@@ -339,9 +336,10 @@
   }
 
   function onReady () {
+    var ENV = window.pypestreamConfig.ENV || 'prod'
     var url = 'https://' + ENV + '-webservice-v3r2.pype.tech/v3/consumer/anonymous_session'
     post(url, JSON.stringify({
-      app_id: APP_ID,
+      app_id: window.pypestreamConfig.APP_ID,
       app_type : 'consumer',
       device_id : 'my-device-id',
       device_type : 'web',

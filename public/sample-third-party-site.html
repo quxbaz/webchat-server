@@ -22,7 +22,7 @@
         max-width: 768px;
         margin: 0 auto;
         font-family: georgia;
-        margin-top: 110px;
+        margin-top: 130px;
       }
       .columns {
         column-count: 3;
@@ -57,7 +57,7 @@
         margin: 0;
         font-size: 13px;
         font-weight: normal;
-        width: 50px;
+        width: 56px;
         text-align: right;
       }
       .config section {
@@ -79,9 +79,15 @@
       .debug-config {
         margin-top: 4px;
       }
+      .app-id-config {
+        margin-top: 4px;
+      }
       button.is-selected {
         background: #8876bc;
         color: #fff;
+      }
+      input[type="text"] {
+        width: 240px;
       }
     </style>
   </head>
@@ -103,6 +109,10 @@
         <h3>DEBUG</h3>
         <button id='mode-debug-true' onclick="setDebug(true, true)">true</button>
         <button id='mode-debug-false' onclick="setDebug(false, true)">false</button>
+      </section>
+      <section class="app-id-config">
+        <h3>APP_ID</h3>
+        <input type="text" id='app-id' />
       </section>
     </div>
     <h1>My Third-Party World Wide Web Site On The Internet</h1>
@@ -140,6 +150,10 @@
         })
         document.getElementById('mode-debug-' + debug.toString()).classList.add('is-selected')
       }
+      function setAppId (value) {
+        window.pypestreamConfig.APP_ID = value
+        document.getElementById('app-id').value = value
+      }
     </script>
     <script>
       window.pypestreamConfig = {
@@ -156,8 +170,9 @@
         // script. This is referenced in the widget launcher script to
         // perform a rest call.
         // APP_ID: '5ad7423c-7365-4a0c-bd88-4734794c1759',  // default style
-        // APP_ID: 'b295f7df-51fe-4734-8f8e-d50c6eb476ca',  // Custom colors
-        APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // Custom size
+        // APP_ID: 'b295f7df-51fe-4734-8f8e-d50c6eb476ca',  // custom colors
+        // APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // custom size
+        APP_ID: 'f181db98-d234-4d09-9a78-b5695f778a16',  // working chat
       }
 
       setEnv(window.pypestreamConfig.ENV)
@@ -167,6 +182,12 @@
       }
       setMode(mode)
       setDebug(window.pypestreamConfig.debug)
+      setAppId(window.pypestreamConfig.APP_ID)
+
+      var domAppId = document.getElementById('app-id')
+      domAppId.addEventListener('input', function (event) {
+        setAppId(domAppId.value)
+      })
 
       ;(function () {
         // This references a static file on one of our content servers. It
