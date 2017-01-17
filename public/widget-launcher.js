@@ -80,8 +80,7 @@
   // Mutables
   var chatContainerWidth = DEFAULT_WIDTH
   var chatContainerHeight = DEFAULT_HEIGHT
-  var iframeSrc = 'http://localhost:5000'
-  // var iframeSrc = 'http://192.168.1.28:5000'
+  var iframeSrc = 'https://test-webchat.herokuapp.com/'
   var isLauncherActive = false
 
   // DOM elements

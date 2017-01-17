@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html {
+        background: #fff;
+      }
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      body {
+        max-width: 768px;
+        margin: 0 auto;
+        font-family: georgia;
+      }
+      .columns {
+        column-count: 3;
+      }
+      .columns p:first-child {
+        margin-top: 0;
+      }
+      .columns p:first-child:first-letter {
+        margin-left: 18px;
+      }
+      .first-letter {
+        position: absolute;
+        margin-left: -1px;
+        margin-top: -7px;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Third-Party World Wide Web Site On The Internet</h1>
+    <div class="columns">
+      <p>
+        <span class="first-letter">L</span>orem
+        ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
+        eget eros ligula. Phasellus sit amet purus lorem. Sed felis
+        felis, molestie ut ligula eget, mattis laoreet ipsum. Integer id
+        ante quis neque sodales finibus quis et ex. Pellentesque pharetra
+        lorem id nisi sollicitudin ultrices. Aliquam erat volutpat. Proin
+        interdum viverra erat, commodo egestas sapien luctus
+        eget. Suspendisse consequat interdum magna id tempus.
+      </p>
+    </div>
+    <script>
+      window.pypestreamConfig = {
+        // This will be omitted in the actual code. Will default to 'prod'
+        ENV: 'ce',
+
+        // The third-party site hardcodes this; taken from the admin
+        // script. This is referenced in the widget launcher script to
+        // perform a rest call.
+        // APP_ID: '5ad7423c-7365-4a0c-bd88-4734794c1759',  // default style
+        // APP_ID: 'b295f7df-51fe-4734-8f8e-d50c6eb476ca',  // Custom colors
+        APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // Custom size
+      }
+
+      ;(function () {
+        // This references a static file on one of our content servers. It
+        // never changes
+        var SCRIPT_SRC = 'https://test-webchat.herokuapp.com/widget-launcher.js
+        window.addEventListener('load', function () {
+          var script = Object.assign(document.createElement('script'), {
+            type: 'text/javascript',
+            src: SCRIPT_SRC,
+            async: true,
+          })
+          document.body.appendChild(script)
+        }, false)
+      })()
+    </script>
+  </body>
+</html>
