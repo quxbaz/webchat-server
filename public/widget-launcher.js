@@ -213,7 +213,9 @@
     customStyle = styleJson
     iframeSrc += '?style=' + window.encodeURIComponent(styleStr)
     if (window.pypestreamConfig.debug) {
+      console.log(window.pypestreamConfig.debug)
       iframeSrc += '&debug=true'
+      console.log(iframeSrc)
     }
 
     // <TEMP>
