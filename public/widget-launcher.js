@@ -7,10 +7,6 @@
   we are doing CSS imperatively, which accounts for a large bulk of
   the code. We also must stick to ES5 and not affect the parent
   context.
-
-  <TODO>
-  - Remove auth header!
-  - Animate from chats icon -> x icon
 */
 
 ;(function () {
@@ -355,6 +351,7 @@
   }, false)
 
   window.addEventListener('message', function (event) {
+    console.log('message')
     if (event.data === 'TOGGLE') {
       toggleWidget()
     }
