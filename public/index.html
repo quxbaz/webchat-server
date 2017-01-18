@@ -1,3 +1,227 @@
 <!DOCTYPE html>
-<div id="root" style="height:100%"></div>
-<script src="bundle.min.js"></script>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html {
+        background: #fff;
+      }
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      body {
+        font-family: georgia;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      .content {
+        max-width: 768px;
+        margin: 0 auto;
+      }
+      .columns {
+        column-count: 3;
+      }
+      .columns p:first-child {
+        margin-top: 0;
+      }
+      .columns p:first-child:first-letter {
+        margin-left: 18px;
+      }
+      .first-letter {
+        position: absolute;
+        margin-left: -1px;
+        margin-top: -7px;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+      .config {
+        width: 100%;
+        margin: 0;
+        padding: 6px 4px;
+        background: #ff009f;
+        color: #fff;
+        font-family: monospace;
+        font-size: 13px;
+        box-shadow: 0 4px 8px #c5c5c5;
+      }
+      .config h3 {
+        display: inline-block;
+        margin: 0;
+        font-size: 13px;
+        font-weight: normal;
+        width: 56px;
+        text-align: right;
+      }
+      .config section {
+        word-spacing: 0;
+      }
+      button {
+        margin: 0;
+        padding: 4px 12px;
+        border: none;
+        background: #fff;
+        outline: none !important;
+      }
+      button:hover {
+        background: #cec6e4;
+      }
+      button[disabled] {
+        background: #fff;
+        opacity: 0.7;
+      }
+      .mode-config {
+        margin-top: 4px;
+      }
+      .debug-config {
+        margin-top: 4px;
+      }
+      .app-id-config {
+        margin-top: 4px;
+      }
+      button.is-selected {
+        background: #8876bc;
+        color: #fff;
+      }
+      input[type="text"] {
+        width: 260px;
+      }
+      section.launch {
+        margin-top: 4px;
+        margin-left: 64px;
+      }
+      #launcher {
+      }
+    </style>
+  </head>
+  <body>
+    <div class="config">
+      <section class="env-config">
+        <h3>ENV</h3>
+        <button id='env-prod' onclick="setEnv('prod', true)">prod</button>
+        <button id='env-qa' onclick="setEnv('qa', true)">qa</button>
+        <button id='env-stage' onclick="setEnv('stage', true)">stage</button>
+        <button id='env-ce' onclick="setEnv('ce', true)">ce</button>
+      </section>
+      <section class="mode-config">
+        <h3>MODE</h3>
+        <button id='mode-localhost' onclick="setMode('localhost', true)">localhost</button>
+        <button id='mode-heroku' onclick="setMode('heroku', true)">heroku</button>
+      </section>
+      <section class="debug-config">
+        <h3>DEBUG</h3>
+        <button id='mode-debug-true' onclick="setDebug(true, true)">true</button>
+        <button id='mode-debug-false' onclick="setDebug(false, true)">false</button>
+      </section>
+      <section class="app-id-config">
+        <h3>APP_ID</h3>
+        <input type="text" id='app-id' />
+      </section>
+      <section class='launch'>
+        <button id='launcher'>Launch widget</button>
+      </section>
+    </div>
+    <div className="content">
+      <h1>My Third-Party World Wide Web Site On The Internet</h1>
+      <div class="columns">
+        <p>
+          <span class="first-letter">L</span>orem
+          ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
+          eget eros ligula. Phasellus sit amet purus lorem. Sed felis
+          felis, molestie ut ligula eget, mattis laoreet ipsum. Integer id
+          ante quis neque sodales finibus quis et ex. Pellentesque pharetra
+          lorem id nisi sollicitudin ultrices. Aliquam erat volutpat. Proin
+          interdum viverra erat, commodo egestas sapien luctus
+          eget. Suspendisse consequat interdum magna id tempus.
+        </p>
+      </div>
+    <div>
+    <script>
+      function setEnv (env, isEvent) {
+        window.pypestreamConfig.ENV = env
+        document.querySelectorAll('.env-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('env-' + env).classList.add('is-selected')
+      }
+      function setMode (mode, isEvent) {
+        window.pypestreamConfig.mode = mode
+        document.querySelectorAll('.mode-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('mode-' + mode).classList.add('is-selected')
+      }
+      function setDebug (debug, isEvent) {
+        window.pypestreamConfig.debug = debug
+        document.querySelectorAll('.debug-config button').forEach((button) => {
+          button.classList.remove('is-selected')
+        })
+        document.getElementById('mode-debug-' + debug.toString()).classList.add('is-selected')
+      }
+      function setAppId (value) {
+        window.pypestreamConfig.APP_ID = value
+        document.getElementById('app-id').value = value
+      }
+    </script>
+    <script>
+      window.pypestreamConfig = {
+        // This will be omitted in the actual code. Will default to 'prod'
+        ENV: 'ce',
+
+        // Used to determine whether to use localhost or live urls
+        mode: 'localhost',
+
+        // If the app start in debug mode
+        debug: false,
+
+        // The third-party site hardcodes this; taken from the admin
+        // script. This is referenced in the widget launcher script to
+        // perform a rest call.
+        // APP_ID: '5ad7423c-7365-4a0c-bd88-4734794c1759',  // default style
+        // APP_ID: 'b295f7df-51fe-4734-8f8e-d50c6eb476ca',  // custom colors
+        // APP_ID: '73d5ffbe-f05c-4402-b887-c15d54967fda',  // custom size
+        APP_ID: 'f181db98-d234-4d09-9a78-b5695f778a16',  // working chat
+      }
+
+      setEnv(window.pypestreamConfig.ENV)
+      var mode = window.pypestreamConfig.mode
+      if (location.href.indexOf('herokuapp') !== -1) {
+        mode = 'heroku'
+      }
+      setMode(mode)
+      setDebug(window.pypestreamConfig.debug)
+      setAppId(window.pypestreamConfig.APP_ID)
+
+      var domAppId = document.getElementById('app-id')
+      domAppId.addEventListener('input', function (event) {
+        setAppId(domAppId.value)
+      })
+
+      ;(function () {
+        // This references a static file on one of our content servers. It
+        // never changes
+        var SCRIPT_SRC = 'http://localhost:7100/index.js'  // <TODO> Change to static file location
+        if (mode === 'heroku') {
+          SCRIPT_SRC = 'https://test-webchat.herokuapp.com/widget-launcher.js'
+        }
+        // var SCRIPT_SRC = 'http://192.168.1.28:7100/index.js'
+        window.addEventListener('load', function () {
+          var script = Object.assign(document.createElement('script'), {
+            type: 'text/javascript',
+            src: SCRIPT_SRC,
+            async: true,
+          })
+          var launcher = document.getElementById('launcher')
+          launcher.addEventListener('click', function () {
+            launcher.disabled = true
+            document.body.appendChild(script)
+          })
+        }, false)
+      })()
+    </script>
+  </body>
+</html>
