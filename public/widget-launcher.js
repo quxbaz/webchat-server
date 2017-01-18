@@ -152,6 +152,9 @@
         if (window.pypestreamConfig.debug) {
           iframeSrc += '&debug=true'
         }
+        if (window.pypestreamConfig.ENV) {
+          iframeSrc += '&env=' + window.pypestreamConfig.ENV
+        }
         appIframe = createIframe(iframeSrc)
         chatContainer.appendChild(appIframe)
       }
