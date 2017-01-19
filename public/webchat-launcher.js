@@ -66,6 +66,7 @@
     border: 'none',
     borderRadius: '100px',
     background: '#2e7de1',
+    transform: 'scale(0)',
     transition: 'all 120ms linear',
     boxShadow: '0 1px 5px 0 rgba(0, 0, 0, 0.3)',
   }
@@ -374,6 +375,14 @@
 
     document.body.appendChild(chatContainer)
     document.body.appendChild(appLauncher)
+
+    setTimeout(function () {
+      appLauncher.style.transform = 'scale(1.4)'
+      setTimeout(function () {
+        appLauncher.style.transform = 'scale(1)'
+      }, 120)
+    }, 100)
+
     onResize()
   }
 
