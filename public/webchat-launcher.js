@@ -73,11 +73,16 @@
   // Mutables
   var chatContainerWidth = DEFAULT_WIDTH
   var chatContainerHeight = DEFAULT_HEIGHT
-  var iframeSrc = 'http://localhost:5000'
-  if (window.pypestreamConfig.mode === 'heroku') {
-    iframeSrc = 'https://test-webchat.herokuapp.com'
+
+  var iframeSrc
+  if (window.pypestreamConfig.domain === 'localhost') {
+    iframeSrc = 'http://localhost:5000'
+  } else if (window.pypestreamConfig.domain === 'heroku') {
+    iframeSrc = 'https://test-webchat.herokuapp.com/bundle.min.js'
+  } else if (window.pypestreamConfig.domain === 'dev') {
+    iframeSrc = 'http://stage-webchat-v3r2.pype.tech/bundle.min.js'
   }
-  // var iframeSrc = 'http://192.168.1.28:5000'
+
   var isLauncherActive = false
 
   // DOM elements
@@ -176,7 +181,7 @@
 
   function setLauncherVisibility () {
     if (window.innerWidth <= 768) {
-      appLauncher.style.display = isLauncherActive ? 'none' : 'block'
+      appLauncher.style.display = isLauncherActive ? 'none' : 'flex'
     } else {
       appLauncher.style.display = 'flex'
     }
@@ -351,7 +356,6 @@
   }, false)
 
   window.addEventListener('message', function (event) {
-    console.log('message')
     if (event.data === 'TOGGLE') {
       toggleWidget()
     }

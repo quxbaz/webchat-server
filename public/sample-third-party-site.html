@@ -74,7 +74,7 @@
         background: #fff;
         opacity: 0.7;
       }
-      .mode-config {
+      .domain-config {
         margin-top: 4px;
       }
       .debug-config {
@@ -94,8 +94,7 @@
         margin-top: 4px;
         margin-left: 64px;
       }
-      #launcher {
-      }
+      #launcher {}
     </style>
   </head>
   <body>
@@ -107,15 +106,16 @@
         <button id='env-stage' onclick="setEnv('stage', true)">stage</button>
         <button id='env-ce' onclick="setEnv('ce', true)">ce</button>
       </section>
-      <section class="mode-config">
-        <h3>MODE</h3>
-        <button id='mode-localhost' onclick="setMode('localhost', true)">localhost</button>
-        <button id='mode-heroku' onclick="setMode('heroku', true)">heroku</button>
+      <section class="domain-config">
+        <h3>DOMAIN</h3>
+        <button id='domain-localhost' onclick="setDomain('localhost', true)">localhost</button>
+        <button id='domain-heroku' onclick="setDomain('heroku', true)">heroku</button>
+        <button id='domain-dev' onclick="setDomain('dev', true)">v3r2</button>
       </section>
       <section class="debug-config">
         <h3>DEBUG</h3>
-        <button id='mode-debug-true' onclick="setDebug(true, true)">true</button>
-        <button id='mode-debug-false' onclick="setDebug(false, true)">false</button>
+        <button id='domain-debug-true' onclick="setDebug(true, true)">true</button>
+        <button id='domain-debug-false' onclick="setDebug(false, true)">false</button>
       </section>
       <section class="app-id-config">
         <h3>APP_ID</h3>
@@ -148,19 +148,19 @@
         })
         document.getElementById('env-' + env).classList.add('is-selected')
       }
-      function setMode (mode, isEvent) {
-        window.pypestreamConfig.mode = mode
-        document.querySelectorAll('.mode-config button').forEach((button) => {
+      function setDomain (domain, isEvent) {
+        window.pypestreamConfig.domain = domain
+        document.querySelectorAll('.domain-config button').forEach((button) => {
           button.classList.remove('is-selected')
         })
-        document.getElementById('mode-' + mode).classList.add('is-selected')
+        document.getElementById('domain-' + domain).classList.add('is-selected')
       }
       function setDebug (debug, isEvent) {
         window.pypestreamConfig.debug = debug
         document.querySelectorAll('.debug-config button').forEach((button) => {
           button.classList.remove('is-selected')
         })
-        document.getElementById('mode-debug-' + debug.toString()).classList.add('is-selected')
+        document.getElementById('domain-debug-' + debug.toString()).classList.add('is-selected')
       }
       function setAppId (value) {
         window.pypestreamConfig.APP_ID = value
@@ -173,9 +173,9 @@
         ENV: 'ce',
 
         // Used to determine whether to use localhost or live urls
-        mode: 'localhost',
+        domain: 'dev',
 
-        // If the app start in debug mode
+        // If the app starts in debug mode
         debug: false,
 
         // The third-party site hardcodes this; taken from the admin
@@ -188,11 +188,13 @@
       }
 
       setEnv(window.pypestreamConfig.ENV)
-      var mode = window.pypestreamConfig.mode
+      var domain = window.pypestreamConfig.domain
       if (location.href.indexOf('herokuapp') !== -1) {
-        mode = 'heroku'
+        domain = 'heroku'
+      } else if (location.href.indexOf('localhost') !== -1) {
+        domain = 'localhost'
       }
-      setMode(mode)
+      setDomain(domain)
       setDebug(window.pypestreamConfig.debug)
       setAppId(window.pypestreamConfig.APP_ID)
 
@@ -204,9 +206,13 @@
       ;(function () {
         // This references a static file on one of our content servers. It
         // never changes
-        var SCRIPT_SRC = 'http://localhost:7100/index.js'  // <TODO> Change to static file location
-        if (mode === 'heroku') {
-          SCRIPT_SRC = 'https://test-webchat.herokuapp.com/widget-launcher.js'
+        var SCRIPT_SRC
+        if (domain === 'localhost') {
+          SCRIPT_SRC = 'http://localhost:7100/index.js'
+        } else if (domain === 'heroku') {
+          SCRIPT_SRC = 'https://test-webchat.herokuapp.com/webchat-launcher.js'
+        } else if (domain === 'dev') {
+          SCRIPT_SRC = 'https://s3-us-west-2.amazonaws.com/stage-webchat-v3r2.pype.tech/webchat-launcher.js'
         }
         // var SCRIPT_SRC = 'http://192.168.1.28:7100/index.js'
         window.addEventListener('load', function () {
