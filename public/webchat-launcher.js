@@ -80,7 +80,7 @@
   } else if (window.pypestreamConfig.domain === 'heroku') {
     iframeSrc = 'https://test-webchat.herokuapp.com'
   } else if (window.pypestreamConfig.domain === 'dev') {
-    iframeSrc = 'http://stage-webchat-v3r2.pype.tech/bundle.min.js'
+    iframeSrc = 'http://stage-webchat-v3r2.pype.tech'
   }
 
   var isLauncherActive = false
