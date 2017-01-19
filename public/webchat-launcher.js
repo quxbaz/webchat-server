@@ -78,7 +78,7 @@
   if (window.pypestreamConfig.domain === 'localhost') {
     iframeSrc = 'http://localhost:5000'
   } else if (window.pypestreamConfig.domain === 'heroku') {
-    iframeSrc = 'https://test-webchat.herokuapp.com/bundle.min.js'
+    iframeSrc = 'https://test-webchat.herokuapp.com'
   } else if (window.pypestreamConfig.domain === 'dev') {
     iframeSrc = 'http://stage-webchat-v3r2.pype.tech/bundle.min.js'
   }
