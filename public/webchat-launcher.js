@@ -84,6 +84,8 @@
   }
 
   var isLauncherActive = false
+  var hasIframeLoaded = false
+  var animId
 
   // DOM elements
   var chatContainer
@@ -121,27 +123,59 @@
   function createLoader () {
     var div = document.createElement('div')
     Object.assign(div.style, {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       position: 'absolute',
+      top: 0,
       right: 0,
       bottom: 0,
-      padding: '4px 16px',
+      left: 0,
       fontFamily: 'sans-serif',
       fontSize: '20px',
-      color: '#fff',
-      background: '#f0f',
-      // background: '#2e7de1',
+      color: '#79797',
     })
-    div.innerText = 'Loading...'
+    var loader = document.createElement('div')
+    Object.assign(loader.style, {
+      width: '40px',
+      height: '40px',
+      border: '12px solid #f3f3f3',
+      borderTop: '12px solid #2e7de1',
+      borderRadius: '50%',
+    })
+
+    var rate = 540  // degree rotations per sec
+    var last = Date.now()
+    var deg = 0
+
+    animId = setInterval(() => {
+      window.requestAnimationFrame(() => {
+        if (hasIframeLoaded) {
+          return
+        }
+        var now = Date.now()
+        var dt = Date.now() - last
+        last = now
+        deg += rate * dt / 1000
+        loader.style.transform = 'rotate(' + deg + 'deg)'
+      })
+    }, 10)
+
+    div.appendChild(loader)
     return div
   }
 
-  function createIframe (src /* , onLoad */) {
+  function createIframe (src) {
     var iframe = document.createElement('iframe')
     iframe.src = src
     iframe.width = '100%'
     iframe.height = '100%'
     Object.assign(iframe.style, IFRAME_STYLE)
-    // iframe.addEventListener('load', onLoad)
+    iframe.addEventListener('load', function () {
+      hasIframeLoaded = true
+      clearInterval(animId)
+      appLoader.style.display = 'none'
+    })
     return iframe
   }
 
@@ -156,8 +190,12 @@
         if (window.pypestreamConfig.ENV) {
           iframeSrc += '&env=' + window.pypestreamConfig.ENV
         }
+        appLoader = createLoader()
         appIframe = createIframe(iframeSrc)
-        chatContainer.appendChild(appIframe)
+        var fragment = document.createDocumentFragment()
+        fragment.appendChild(appLoader)
+        fragment.appendChild(appIframe)
+        chatContainer.appendChild(fragment)
       }
       chatContainer.style.transform = 'translateY(0)'
       chatContainer.style.visibility = 'visible'
@@ -249,7 +287,7 @@
     }
 
     chatContainer = createChatContainer()
-    appLoader = createLoader()
+    // appLoader = createLoader()
     // appIframe = createIframe(src)
     appLauncher = createLauncher(appLauncherStyle)
     var icon = document.createElement('img')
