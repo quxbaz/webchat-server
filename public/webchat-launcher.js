@@ -208,6 +208,14 @@
       chatContainer.style.opacity = 0
       icon.src = isBlack(customStyle.widgetStyleTextColor) ? BLACK_CHATS_SVG : WHITE_CHATS_SVG
     }
+    icon.style.opacity = 0
+    icon.style.transition = ''
+    icon.style.transform = 'rotate(-90deg)'
+    setTimeout(function () {
+      icon.style.transition = 'all 180ms ease-out'
+      icon.style.opacity = 1
+      icon.style.transform = 'rotate(0)'
+    }, 40)
     setLauncherVisibility()
   }
 
