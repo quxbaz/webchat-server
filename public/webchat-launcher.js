@@ -21,6 +21,26 @@
     return color.toLowerCase() === '#ffffff' || color.toLowerCase() === '#fff'
   }
 
+  // Sessions
+
+  var cache = {
+    clear: function () {
+      window.sessionStorage.clear()
+    },
+    saveSession: function (data) {
+      window.sessionStorage.setItem('pypestream-webchat-user', data)
+    },
+    getSession: function () {
+      return window.sessionStorage.getItem('pypestream-webchat-user')
+    },
+    saveChatId: function (id) {
+      window.sessionStorage.setItem('pypestream-webchat-chat-id', id)
+    },
+    getChatId: function (id) {
+      return window.sessionStorage.getItem('pypestream-webchat-chat-id')
+    },
+  }
+
   // Constants and declarations
 
   var WHITE_CHATS_SVG = 'data:image/svg+xml;utf8,<svg width="32px" height="30px" viewBox="0 0 32 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch --><title>0A642313-4BAB-454D-A9A3-F49A9FABBCAA</title><desc>Created with sketchtool.</desc><defs></defs><g id="Future-V1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="18.-User-bubble-tool-tip" transform="translate(-280.000000, -184.000000)" fill="#FFFFFF"><g id="Group-10-Copy-18" transform="translate(50.000000, 51.000000)"><g id="#intercom-container-+-Group-33-+-Group-33-Copy-+-Topics-+-Group-8-+-Group-32-+-Group-5-+-Group-+-Group-30-Mask"><g id="Group-17" transform="translate(180.000000, 105.000000)"><g id="Group" transform="translate(20.000000, 10.000000)"><g id="Chats-Icon-white" transform="translate(30.000000, 18.000000)"><g id="Chats-Icon"><path d="M5,23.9066464 L11.9374124,17 L18.5,17 C23.1946224,17 27,13.1944471 27,8.5 C27,3.80555287 23.1946224,0 18.5,0 L8.5,0 C3.80605287,0 0,3.80587762 0,8.5 C0,11.8827947 1.99806945,14.8824397 5,16.2387971 L5,23.9066464 Z M7,14.8571922 L6.33370926,14.621324 C3.7565141,13.7089916 2,11.2724446 2,8.5 C2,4.91046773 4.91060176,2 8.5,2 L18.5,2 C22.0900323,2 25,4.91010175 25,8.5 C25,12.0898983 22.0900323,15 18.5,15 L11.1115876,15 L7,19.0933536 L7,14.8571922 Z" id="Stroke-1"></path><path d="M28.00005,29.9496518 L28.00005,23.4965407 C30.3836628,22.5043935 32.00005,20.162373 32.00005,17.49975 C32.00005,13.9098066 29.0901761,10.99975 25.50005,10.99975 L25.13505,10.99975 L25.13505,12.99975 L25.50005,12.99975 C27.9855785,12.99975 30.00005,15.014348 30.00005,17.49975 C30.00005,19.5239743 28.6491563,21.281382 26.72756,21.8255914 L26.00005,22.0316273 L26.00005,25.1208482 L22.8792959,21.99975 L19.50005,21.99975 C17.0149612,21.99975 15.00005,19.9850918 15.00005,17.49975 C15.00005,17.0800601 15.0575644,16.6676852 15.1695199,16.2706383 L13.2445801,15.7278617 C13.0830314,16.300789 13.00005,16.895761 13.00005,17.49975 C13.00005,21.0897175 15.910448,23.99975 19.50005,23.99975 L22.0508041,23.99975 L28.00005,29.9496518 Z" id="Stroke-3"></path></g></g></g></g></g></g></g></g></svg>'
@@ -145,22 +165,18 @@
       borderRadius: '50%',
     })
 
-    var rate = 540  // degree rotations per sec
-    var last = Date.now()
-    var deg = 0
-
-    animId = setInterval(() => {
+    ;(function animateLoader(prevTime, deg, rate) {
       window.requestAnimationFrame(() => {
         if (hasIframeLoaded) {
           return
         }
         var now = Date.now()
-        var dt = Date.now() - last
-        last = now
-        deg += rate * dt / 1000
+        var dt = now - prevTime
+        deg = (deg + (rate * dt / 1000)) % 360
         loader.style.transform = 'rotate(' + deg + 'deg)'
+        animateLoader(now, deg, rate)
       })
-    }, 10)
+    })(Date.now(), 0, 540)
 
     div.appendChild(loader)
     return div
@@ -174,7 +190,6 @@
     Object.assign(iframe.style, IFRAME_STYLE)
     iframe.addEventListener('load', function () {
       hasIframeLoaded = true
-      clearInterval(animId)
       appLoader.style.display = 'none'
     })
     return iframe
@@ -190,6 +205,11 @@
         }
         if (window.pypestreamConfig.ENV) {
           iframeSrc += '&env=' + window.pypestreamConfig.ENV
+        }
+        var cachedSession = cache.getSession()
+        var cachedChatId = cache.getChatId()
+        if (cachedSession && cachedChatId) {
+          iframeSrc += '&chat_id=' + window.encodeURIComponent(cachedChatId)
         }
         appLoader = createLoader()
         appIframe = createIframe(iframeSrc)
@@ -210,7 +230,7 @@
     }
     icon.style.opacity = 0
     icon.style.transition = ''
-    icon.style.transform = 'rotate(-90deg)'
+    icon.style.transform = isLauncherActive ? 'rotate(-90deg)' : 'rotate(90deg)'
     setTimeout(function () {
       icon.style.transition = 'all 180ms ease-out'
       icon.style.opacity = 1
@@ -258,6 +278,9 @@
   }
 
   function onGetWidgetData (resp) {
+    // Cache the session data to be resumed in case the user refreshes
+    // or navigates away
+    cache.saveSession(resp)
     var json = JSON.parse(resp)
     var styleStr = json.widget_data.style
     var styleJson = JSON.parse(styleStr)
@@ -397,13 +420,20 @@
   function onReady () {
     var ENV = window.pypestreamConfig.ENV || 'prod'
     var url = 'https://' + ENV + '-webservice-v3r2.pype.tech/v3/consumer/anonymous_session'
-    post(url, JSON.stringify({
-      app_id: window.pypestreamConfig.APP_ID,
-      app_type : 'consumer',
-      device_id : 'my-device-id',
-      device_type : 'web',
-      phone : '15555555555',
-    }), onGetWidgetData)
+
+    // Check cache for existing sessions
+    var cachedSession = cache.getSession()
+    if (cachedSession) {
+      onGetWidgetData(cachedSession)
+    } else {
+      post(url, JSON.stringify({
+        app_id: window.pypestreamConfig.APP_ID,
+        app_type : 'consumer',
+        device_id : 'my-device-id',
+        device_type : 'web',
+        phone : '15555555555',
+      }), onGetWidgetData)
+    }
   }
 
   window.addEventListener('resize', function () {
@@ -411,8 +441,15 @@
   }, false)
 
   window.addEventListener('message', function (event) {
-    if (event.data === 'TOGGLE') {
+    const data = event.data.split(':')
+    const type = data[0]
+    const payload = data[1]
+    if (type === 'TOGGLE') {
       toggleWidget()
+    } else if (type === 'START_CHAT') {
+      cache.saveChatId(payload)
+    } else if (type === 'END_OF_CHAT') {
+      cache.clear()
     }
   }, false)
 

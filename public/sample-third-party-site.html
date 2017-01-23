@@ -122,6 +122,7 @@
         <input type="text" id='app-id' />
       </section>
       <section class='launch'>
+        <button id='clear-cache'>Clear cache</button>
         <button id='launcher'>Launch widget</button>
       </section>
     </div>
@@ -221,6 +222,11 @@
             type: 'text/javascript',
             src: SCRIPT_SRC,
             async: true,
+          })
+          var clearCache = document.getElementById('clear-cache')
+          clearCache.addEventListener('click', function () {
+            clearCache.disabled = true
+            sessionStorage.clear()
           })
           var launcher = document.getElementById('launcher')
           launcher.addEventListener('click', function () {
