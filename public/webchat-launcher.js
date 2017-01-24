@@ -450,6 +450,10 @@
       cache.saveChatId(payload)
     } else if (type === 'END_OF_CHAT') {
       cache.clear()
+    } else if (type === 'VIBRATE') {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(36)
+      }
     }
   }, false)
 
