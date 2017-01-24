@@ -70,6 +70,9 @@
       button:hover {
         background: #cec6e4;
       }
+      button:focus {
+        outline: 1px solid blue !important;
+      }
       button[disabled] {
         background: #fff;
         opacity: 0.7;
@@ -235,6 +238,10 @@
           })
         }, false)
       })()
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('launcher').focus()
+      }, false)
     </script>
   </body>
 </html>

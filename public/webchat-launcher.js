@@ -91,6 +91,19 @@
     boxShadow: '0 1px 5px 0 rgba(0, 0, 0, 0.3)',
   }
 
+  var LAUNCHER_MASK_STYLE = {
+    cursor: 'inherit',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0,
+    background: '#000000',
+    borderRadius: '100px',
+    transition: 'opacity 240ms ease-out',
+  }
+
   // Mutables
   var chatContainerWidth = DEFAULT_WIDTH
   var chatContainerHeight = DEFAULT_HEIGHT
@@ -243,6 +256,18 @@
     var div = document.createElement('div')
     Object.assign(div.style, LAUNCHER_STYLE, style)
     div.addEventListener('click', toggleWidget, false)
+    var mask = document.createElement('div')
+    Object.assign(mask.style, LAUNCHER_MASK_STYLE)
+    div.addEventListener('mouseover', function () {
+      div.appendChild(mask)
+      setTimeout(() => {
+        mask.style.opacity = 0.3;
+      }, 10)
+    })
+    mask.addEventListener('mouseout', function () {
+      div.removeChild(mask)
+      mask.style.opacity = 0;
+    })
     return div
   }
 
