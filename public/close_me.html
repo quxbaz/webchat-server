@@ -2,10 +2,22 @@
   <div>
     This page calls the code:
     <pre>
-      window.parent.postMessage('close_me', '*')
+      if (window.webkit != null) {
+        // Test to see if this is operating in a UIWebView context
+        window.webkit.messageHandlers.observe.postMessage('close_me')
+      } else {
+        // Else probably occurring from within a browser
+        window.parent.postMessage('close_me', '*')
+      }
     </pre>
   </div>
   <script>
-    window.parent.postMessage('close_me', '*')
+    if (window.webkit != null) {
+      // Test to see if this is operating in a UIWebView context
+      window.webkit.messageHandlers.observe.postMessage('close_me')
+    } else {
+      // Else probably occurring from within a browser
+      window.parent.postMessage('close_me', '*')
+    }
   </script>
 </html>
