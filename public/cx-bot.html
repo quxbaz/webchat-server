@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <style>
+    body {
+      background: #0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Internet Webpage (bot widget)</h1>
+  <div>
+    <img src='./uni1.jpg' />
+    <img src='./uni2.jpg' />
+  </div>
+  <div>
+    <strong>Configured with APP_ID <code>1112e964-99e6-4243-9de0-84c02c3e9eb1</code></strong>
+  </div>
+  <div>
+    <button onclick='localStorage.clear(); this.disabled=true; this.innerText="Reloading"; location.reload();'>
+      Reset chat
+    </button>
+  </div>
+  <p>
+    <a href='./cx-agent.html'>Go to agent widget page</a>
+  </p>
+  <script>
+    window.pypestreamConfig = {
+      APP_ID: '1112e964-99e6-4243-9de0-84c02c3e9eb1',
+      name: 'Jane Doe', // TODO: Input user's full name
+      phone: '1-555-555-5555', // TODO: Input user's phone number
+      email: 'username@example.com', // TODO: Input user's email address
+      screen_name: 'Screen 1', // TODO: Input user's landing page
+      domain: 'dev',
+      ENV: 'qa',
+    };
+
+    function insertScript () {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'http://webchat-v3r2qa.pype.tech/webchat-launcher.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    if (document.readyState === 'complete') {
+      insertScript();
+    } else {
+      window.addEventListener('load', insertScript);
+    }
+  </script>
+</body>
