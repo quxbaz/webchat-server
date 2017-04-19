@@ -5,6 +5,8 @@
       if (window.webkit != null) {
         // Test to see if this is operating in a UIWebView context
         window.webkit.messageHandlers.observe.postMessage('close_me')
+      } else if (typeof androidCloseMe !== 'undefined') {
+        androidCloseMe()
       } else {
         // Else probably occurring from within a browser
         window.parent.postMessage('close_me', '*')
@@ -15,6 +17,8 @@
     if (window.webkit != null) {
       // Test to see if this is operating in a UIWebView context
       window.webkit.messageHandlers.observe.postMessage('close_me')
+    } else if (typeof androidCloseMe !== 'undefined') {
+      androidCloseMe()
     } else {
       // Else probably occurring from within a browser
       window.parent.postMessage('close_me', '*')
