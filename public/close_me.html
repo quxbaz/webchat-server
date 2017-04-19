@@ -2,8 +2,8 @@
   <div>
     This page calls the code:
     <pre>
-      if (typeof androidCloseMe !== 'undefined') {
-        androidCloseMe()
+      if (typeof AndroidFunction !== 'undefined') {
+        AndroidFunction.save('')
       } else if (window.webkit != null) {
         // Test to see if this is operating in a UIWebView context
         window.webkit.messageHandlers.observe.postMessage('close_me')
@@ -14,8 +14,8 @@
     </pre>
   </div>
   <script>
-    if (typeof androidCloseMe !== 'undefined') {
-      androidCloseMe()
+    if (typeof AndroidFunction !== 'undefined') {
+      AndroidFunction.save('')
     } else if (window.webkit != null) {
       // Test to see if this is operating in a UIWebView context
       window.webkit.messageHandlers.observe.postMessage('close_me')
