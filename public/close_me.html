@@ -3,7 +3,7 @@
     This page calls the code:
     <pre>
       if (typeof AndroidFunction !== 'undefined') {
-        AndroidFunction.save('')
+        AndroidFunction.close('')
       } else if (window.webkit != null) {
         // Test to see if this is operating in a UIWebView context
         window.webkit.messageHandlers.observe.postMessage('close_me')
@@ -15,7 +15,7 @@
   </div>
   <script>
     if (typeof AndroidFunction !== 'undefined') {
-      AndroidFunction.save('')
+      AndroidFunction.close('')
     } else if (window.webkit != null) {
       // Test to see if this is operating in a UIWebView context
       window.webkit.messageHandlers.observe.postMessage('close_me')
